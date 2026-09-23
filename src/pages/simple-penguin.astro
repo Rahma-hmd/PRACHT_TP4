@@ -1,0 +1,74 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+    <main class="min-h-screen bg-[#b0c4de] px-6 py-10">
+        <div class="max-w-5xl mx-auto">
+            <!-- RETOUR ACCUEIL -->
+            <a href="/" class="inline-block mb-6 font-semibold"> ← Accueil </a>
+
+            <!-- TITRE -->
+            <h1 class="text-4xl font-bold mb-3">Simple Penguin</h1>
+
+            <p class="mb-8">
+                Graphique des manchots généré côté client avec JavaScript.
+            </p>
+
+            <!-- CARTE DU GRAPHIQUE -->
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold mb-6">Comparaison des espèces</h2>
+
+                <!-- Le graphique sera ajouté ici -->
+                <div id="graphique" class="overflow-x-auto">
+                    Chargement du graphique...
+                </div>
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<script>
+    // Importer Observable Plot
+    import * as Plot from "@observablehq/plot";
+
+    // Importer les données Penguins
+    import penguins from "../assets/penguins.json";
+
+    // Récupérer la div qui accueillera le graphique
+    const divGraphique = document.querySelector("#graphique");
+
+    // Créer le graphique
+    const graphique = Plot.plot({
+        width: 800,
+        height: 500,
+
+        grid: true,
+
+        x: {
+            label: "Longueur du bec (mm)",
+        },
+
+        y: {
+            label: "Profondeur du bec (mm)",
+        },
+
+        color: {
+            legend: true,
+        },
+
+        marks: [
+            Plot.dot(penguins, {
+                x: "culmen_length_mm",
+                y: "culmen_depth_mm",
+                stroke: "species",
+            }),
+        ],
+    });
+
+    // Vider la div puis afficher le graphique
+    if (divGraphique) {
+        divGraphique.innerHTML = "";
+        divGraphique.append(graphique);
+    }
+</script>

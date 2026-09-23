@@ -1,0 +1,81 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+  <main class="min-h-screen bg-[#b0c4de] px-6 py-10">
+
+    <div class="max-w-5xl mx-auto">
+
+      <a href="/" class="inline-block mb-6 font-semibold">
+        ← Accueil
+      </a>
+
+      <h1 class="text-4xl font-bold mb-3">
+        Graphique simple
+      </h1>
+
+      <p class="mb-8">
+        Premier graphique réalisé avec JavaScript et Observable Plot.
+      </p>
+
+      <!-- CARTE BLANCHE -->
+      <div class="bg-white rounded-xl shadow-lg p-8">
+
+        <h2 class="text-2xl font-bold mb-6">
+          Graphique en barres
+        </h2>
+
+        <!-- JavaScript ajoutera le graphique ici -->
+        <div id="graphique" class="overflow-x-auto">
+          Chargement du graphique...
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+</Layout>
+
+<script>
+  import * as Plot from "@observablehq/plot";
+
+  // 1. Récupérer l'emplacement du graphique
+  const divGraphique = document.querySelector("#graphique");
+
+  // 2. Générer 10 valeurs aléatoires
+  const donnees = Array.from({ length: 10 }, (_, index) => ({
+    numero: index + 1,
+    valeur: Math.round(Math.random() * 100),
+  }));
+
+  // 3. Créer le graphique dans le navigateur
+  const graphique = Plot.plot({
+    width: 800,
+    height: 400,
+    grid: true,
+
+    x: {
+      label: "Numéro",
+    },
+
+    y: {
+      label: "Valeur",
+    },
+
+    marks: [
+      Plot.barY(donnees, {
+        x: "numero",
+        y: "valeur",
+        fill: "#64748b",
+      }),
+    ],
+  });
+
+  // 4. Vider la div, puis ajouter le graphique
+  if (divGraphique) {
+    divGraphique.innerHTML = "";
+    divGraphique.append(graphique);
+  }
+</script>
