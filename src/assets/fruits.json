@@ -1,0 +1,42 @@
+[
+    {
+        "fruit": "Pomme",
+        "categorie": "Classiques",
+        "ventes": 18
+    },
+    {
+        "fruit": "Poire",
+        "categorie": "Classiques",
+        "ventes": 12
+    },
+    {
+        "fruit": "Banane",
+        "categorie": "Classiques",
+        "ventes": 25
+    },
+    {
+        "fruit": "Orange",
+        "categorie": "Agrumes",
+        "ventes": 16
+    },
+    {
+        "fruit": "Citron",
+        "categorie": "Agrumes",
+        "ventes": 9
+    },
+    {
+        "fruit": "Fraise",
+        "categorie": "Fruits rouges",
+        "ventes": 21
+    },
+    {
+        "fruit": "Framboise",
+        "categorie": "Fruits rouges",
+        "ventes": 11
+    },
+    {
+        "fruit": "Myrtille",
+        "categorie": "Fruits rouges",
+        "ventes": 8
+    }
+]

@@ -1,0 +1,140 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+    <main class="min-h-screen bg-[#b0c4de] px-6 py-10">
+        <div class="max-w-5xl mx-auto">
+            <!-- RETOUR ACCUEIL -->
+            <a href="/" class="inline-block mb-6 font-semibold"> ← Accueil </a>
+
+            <!-- TITRE -->
+            <h1 class="text-4xl font-bold mb-3">
+                Fruits — Graphique interactif
+            </h1>
+
+            <p class="mb-8">
+                Sélectionnez une catégorie de fruits pour afficher les données
+                correspondantes.
+            </p>
+
+            <!-- CARTE -->
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <!-- SELECT -->
+                <div class="mb-8">
+                    <label for="categorie" class="block font-semibold mb-2">
+                        Choisir une catégorie :
+                    </label>
+
+                    <select
+                        id="categorie"
+                        class="select bg-white border border-gray-300 w-64"
+                    >
+                        <option value="">Tous les fruits</option>
+
+                        <option value="Classiques"> Classiques </option>
+
+                        <option value="Agrumes"> Agrumes </option>
+
+                        <option value="Fruits rouges"> Fruits rouges </option>
+                    </select>
+                </div>
+
+                <!-- GRAPHIQUE -->
+                <h2 class="text-2xl font-bold mb-6">
+                    Nombre de ventes par fruit
+                </h2>
+
+                <div id="graphique" class="overflow-x-auto">
+                    Chargement du graphique...
+                </div>
+
+                <!-- NOMBRE DE RÉSULTATS -->
+                <p id="resultat" class="mt-5 text-sm text-gray-600"></p>
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<script>
+    
+    import * as Plot from "@observablehq/plot";
+    import fruits from "../assets/fruits.json";
+
+
+    const selectCategorie =
+        document.querySelector<HTMLSelectElement>("#categorie");
+
+    const divGraphique = document.querySelector<HTMLDivElement>("#graphique");
+
+    const resultat = document.querySelector<HTMLParagraphElement>("#resultat");
+
+
+    function renderPlot() {
+        if (!selectCategorie || !divGraphique) {
+            return;
+        }
+
+       
+
+        const categorie = selectCategorie.value;
+
+
+        const fruitsFiltres = fruits.filter((fruit) => {
+            return categorie === "" || fruit.categorie === categorie;
+        });
+
+      
+
+        divGraphique.innerHTML = "";
+
+      
+
+        const graphique = Plot.plot({
+            width: 800,
+            height: 450,
+
+            grid: true,
+
+            x: {
+                label: "Fruit",
+            },
+
+            y: {
+                label: "Nombre de ventes",
+            },
+
+            color: {
+                legend: true,
+            },
+
+            marks: [
+                Plot.barY(fruitsFiltres, {
+                    x: "fruit",
+
+                    y: "ventes",
+
+                    fill: "categorie",
+                }),
+            ],
+        });
+
+      
+
+        divGraphique.append(graphique);
+
+       
+
+        if (resultat) {
+            resultat.innerText = `${fruitsFiltres.length} fruit(s) affiché(s).`;
+        }
+    }
+
+   
+
+    selectCategorie?.addEventListener("change", renderPlot);
+
+    
+    renderPlot();
+</script>
+
