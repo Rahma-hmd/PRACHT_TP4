@@ -6,16 +6,258 @@ import penguins from "../assets/penguins.json";
 ---
 
 <Layout>
-  <h1 class="text-2xl">Test Astro et Plot (Observablehq)</h1>
-  <PlotFigure
-    options={{
-      marks: [
-        Plot.dot(penguins, {
-          x: "culmen_length_mm",
-          y: "culmen_depth_mm",
-          stroke: "species",
-        }),
-      ],
-    }}
-  />
+  <!-- NAVBAR -->
+  <header class="relative z-50 bg-base-100 border-b border-base-300 shadow-sm">
+    <nav class="navbar max-w-7xl mx-auto px-5 md:px-8">
+      <!-- LOGO -->
+      <div class="navbar-start">
+        <a
+          href="/"
+          class="text-2xl font-extrabold tracking-tight text-base-content"
+        >
+          Data<span class="text-accent">Viz</span>
+        </a>
+      </div>
+
+      <!-- NAVIGATION -->
+      <div class="navbar-end gap-3">
+        <a
+          href="/"
+          class="btn btn-ghost hidden sm:inline-flex"
+          aria-current="page"
+        >
+          Accueil
+        </a>
+
+        <!-- MENU DÉROULANT -->
+        <details class="dropdown dropdown-end">
+          <summary class="btn btn-primary gap-2">
+            <span>Graphiques</span>
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="m6 9 6 6 6-6"></path>
+            </svg>
+          </summary>
+
+          <ul
+            class="dropdown-content menu bg-base-100 rounded-box
+                   w-72 max-w-[calc(100vw-2rem)] p-3 mt-3
+                   shadow-xl border border-base-300"
+          >
+            <!-- PREMIERS GRAPHIQUES -->
+            <li class="menu-title">
+              <span>Découverte</span>
+            </li>
+
+            <li>
+              <a href="/simple/"> Graphique en barres </a>
+            </li>
+
+            <li>
+              <a href="/simple-penguin/"> Graphique Penguins </a>
+            </li>
+
+            <li>
+              <div class="divider my-1"></div>
+            </li>
+
+            <!-- GRAPHIQUES INTERACTIFS -->
+            <li class="menu-title">
+              <span>Penguins — Filtres</span>
+            </li>
+
+            <li>
+              <a href="/penguin-filtre/"> Filtre par espèce </a>
+            </li>
+
+            <li>
+              <a href="/penguin-multifiltres/"> Espèce, île et sexe </a>
+            </li>
+
+            <li>
+              <div class="divider my-1"></div>
+            </li>
+
+            <!-- AUTRE JEU DE DONNÉES -->
+            <li class="menu-title">
+              <span>Autres données</span>
+            </li>
+
+            <li>
+              <a href="/fruits-filtre/"> Fruits — Filtre par catégorie </a>
+            </li>
+          </ul>
+        </details>
+      </div>
+    </nav>
+  </header>
+
+  <!-- CONTENU PRINCIPAL -->
+  <main class="min-h-screen bg-[#b0c4de] px-5 md:px-8 py-10 md:py-14">
+    <div class="max-w-6xl mx-auto">
+      <!-- EN-TÊTE DE L'ACCUEIL -->
+      <section class="mb-9">
+        <h1
+          class="text-4xl md:text-5xl font-extrabold
+                 tracking-tight text-base-content mb-4"
+        >
+          Accueil
+        </h1>
+
+        <p class="text-base md:text-lg text-base-content/80 max-w-2xl">
+          Explorez les données à travers différents graphiques et découvrez
+          comment les filtres permettent de modifier les visualisations en temps
+          réel.
+        </p>
+      </section>
+
+      <!-- CARTE PRINCIPALE -->
+      <section
+        id="visualisations"
+        class="card bg-base-100 rounded-2xl
+               border border-base-300 shadow-xl"
+      >
+        <div class="card-body p-5 md:p-8">
+          <!-- TITRE ET BOUTON -->
+          <div
+            class="flex flex-col md:flex-row
+                   md:items-center md:justify-between gap-5"
+          >
+            <div>
+              <span
+                class="inline-block text-xs font-bold uppercase
+                       tracking-widest text-accent mb-3"
+              >
+                Visualisation de données
+              </span>
+
+              <h2 class="text-2xl md:text-3xl font-bold mb-2">Penguins</h2>
+
+              <p class="text-base-content/70 max-w-xl">
+                Comparaison de la longueur et de la profondeur du bec des
+                différentes espèces de manchots.
+              </p>
+            </div>
+
+            <!-- ACTION PRINCIPALE -->
+            <a href="/penguin-multifiltres/" class="btn btn-primary shrink-0">
+              Explorer les données
+
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+
+          <div class="divider my-5"></div>
+
+          <!-- GRAPHIQUE -->
+          <div class="bg-white rounded-xl border border-base-300 p-3 md:p-6">
+            <div class="mb-4">
+              <h3 class="font-bold text-base md:text-lg text-gray-800">
+                Comparaison des espèces
+              </h3>
+
+              <p class="text-sm text-gray-600 mt-1">
+                Longueur du bec et profondeur du bec, en millimètres.
+              </p>
+            </div>
+
+            <div class="overflow-x-auto">
+              <PlotFigure
+                options={{
+                  width: 800,
+                  height: 480,
+
+                  grid: true,
+
+                  x: {
+                    label: "Longueur du bec (mm)",
+                  },
+
+                  y: {
+                    label: "Profondeur du bec (mm)",
+                  },
+
+                  color: {
+                    legend: true,
+                  },
+
+                  marks: [
+                    Plot.dot(penguins, {
+                      x: "culmen_length_mm",
+                      y: "culmen_depth_mm",
+                      stroke: "species",
+                    }),
+                  ],
+                }}
+              />
+            </div>
+          </div>
+
+          <!-- PIED DE CARTE -->
+          <div
+            class="flex flex-col sm:flex-row sm:items-center
+                   sm:justify-between gap-5 pt-5"
+          >
+            <!-- ESPÈCES -->
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="badge badge-outline"> Adelie </span>
+
+              <span class="badge badge-outline"> Chinstrap </span>
+
+              <span class="badge badge-outline"> Gentoo </span>
+            </div>
+
+            <!-- LIENS RAPIDES -->
+            <div class="flex flex-wrap gap-2">
+              <a href="/penguin-filtre/" class="btn btn-outline btn-sm">
+                Filtre par espèce
+              </a>
+
+              <a href="/penguin-multifiltres/" class="btn btn-outline btn-sm">
+                Plusieurs filtres
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LIEN VERS L'AUTRE JEU DE DONNÉES -->
+      <section class="mt-6">
+        <a
+          href="/fruits-filtre/"
+          class="flex items-center justify-between gap-4
+                 bg-base-100 border border-base-300
+                 rounded-xl px-5 py-4 shadow-sm
+                 hover:shadow-md hover:border-accent
+                 transition-all"
+        >
+          <div>
+            <h2 class="font-bold text-lg">Autre visualisation : Fruits</h2>
+
+            <p class="text-sm text-base-content/70 mt-1">
+              Découvrez un graphique en barres avec un filtre par catégorie.
+            </p>
+          </div>
+
+          <span
+            class="text-2xl font-bold text-accent shrink-0"
+            aria-hidden="true"
+          >
+            →
+          </span>
+        </a>
+      </section>
+    </div>
+  </main>
 </Layout>
