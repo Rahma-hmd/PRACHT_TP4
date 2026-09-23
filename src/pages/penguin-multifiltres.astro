@@ -1,0 +1,189 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+    <main class="min-h-screen bg-[#b0c4de] px-6 py-10">
+        <div class="max-w-5xl mx-auto">
+            <!-- RETOUR ACCUEIL -->
+            <a href="/" class="inline-block mb-6 font-semibold"> ← Accueil </a>
+
+            <!-- TITRE -->
+            <h1 class="text-4xl font-bold mb-3">
+                Penguins — Plusieurs filtres
+            </h1>
+
+            <p class="mb-8">
+                Filtrez les manchots selon leur espèce, leur île et leur sexe.
+            </p>
+
+            <!-- CARTE PRINCIPALE -->
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <!-- LES 3 FILTRES -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <!-- FILTRE ESPÈCE -->
+                    <div>
+                        <label for="species" class="block font-semibold mb-2">
+                            Espèce
+                        </label>
+
+                        <select
+                            id="species"
+                            name="species"
+                            class="select bg-white border border-gray-300 w-full"
+                        >
+                            <option value="">Toutes les espèces</option>
+                            <option value="Adelie">Adelie</option>
+                            <option value="Chinstrap">Chinstrap</option>
+                            <option value="Gentoo">Gentoo</option>
+                        </select>
+                    </div>
+
+                    <!-- FILTRE ÎLE -->
+                    <div>
+                        <label for="island" class="block font-semibold mb-2">
+                            Île
+                        </label>
+
+                        <select
+                            id="island"
+                            name="island"
+                            class="select bg-white border border-gray-300 w-full"
+                        >
+                            <option value="">Toutes les îles</option>
+                            <option value="Biscoe">Biscoe</option>
+                            <option value="Dream">Dream</option>
+                            <option value="Torgersen">Torgersen</option>
+                        </select>
+                    </div>
+
+                    <!-- FILTRE SEXE -->
+                    <div>
+                        <label for="sex" class="block font-semibold mb-2">
+                            Sexe
+                        </label>
+
+                        <select
+                            id="sex"
+                            name="sex"
+                            class="select bg-white border border-gray-300 w-full"
+                        >
+                            <option value="">Tous les sexes</option>
+                            <option value="MALE">MALE</option>
+                            <option value="FEMALE">FEMALE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- GRAPHIQUE -->
+                <h2 class="text-2xl font-bold mb-6">Comparaison des espèces</h2>
+
+                <div id="graphique" class="overflow-x-auto">
+                    Chargement du graphique...
+                </div>
+
+                <!-- NOMBRE DE MANCHOTS AFFICHÉS -->
+                <p id="resultat" class="mt-5 text-sm text-gray-600"></p>
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<script>
+    import * as Plot from "@observablehq/plot";
+    import penguins from "../assets/penguins.json";
+
+    // 1. Récupérer les trois menus déroulants
+
+    const selectSpecies = document.querySelector<HTMLSelectElement>("#species");
+
+    const selectIsland = document.querySelector<HTMLSelectElement>("#island");
+
+    const selectSex = document.querySelector<HTMLSelectElement>("#sex");
+
+    // 2. Récupérer les éléments où afficher le résultat
+
+    const divGraphique = document.querySelector<HTMLDivElement>("#graphique");
+
+    const resultat = document.querySelector<HTMLParagraphElement>("#resultat");
+
+    // 3. Créer une fonction pour afficher le graphique
+
+    function renderPlot() {
+        if (!selectSpecies || !selectIsland || !selectSex || !divGraphique) {
+            return;
+        }
+
+        // Récupérer les valeurs des trois menus
+
+        const species = selectSpecies.value;
+        const island = selectIsland.value;
+        const sex = selectSex.value;
+
+        // 4. Filtrer les données selon les trois choix
+
+        const penguinsFiltres = penguins.filter((penguin) => {
+            const correspondSpecies =
+                species === "" || penguin.species === species;
+
+            const correspondIsland = island === "" || penguin.island === island;
+
+            const correspondSex = sex === "" || penguin.sex === sex;
+
+            return correspondSpecies && correspondIsland && correspondSex;
+        });
+
+
+        divGraphique.innerHTML = "";
+
+
+        const graphique = Plot.plot({
+            width: 800,
+            height: 500,
+
+            grid: true,
+
+            x: {
+                label: "Longueur du bec (mm)",
+            },
+
+            y: {
+                label: "Profondeur du bec (mm)",
+            },
+
+            color: {
+                legend: true,
+            },
+
+            marks: [
+                Plot.dot(penguinsFiltres, {
+                    x: "culmen_length_mm",
+                    y: "culmen_depth_mm",
+                    stroke: "species",
+                }),
+            ],
+        });
+
+  
+
+        divGraphique.append(graphique);
+
+        
+
+        if (resultat) {
+            resultat.innerText = `${penguinsFiltres.length} manchot(s) correspondent aux filtres.`;
+        }
+    }
+
+
+
+    selectSpecies?.addEventListener("change", renderPlot);
+
+    selectIsland?.addEventListener("change", renderPlot);
+
+    selectSex?.addEventListener("change", renderPlot);
+
+    
+
+    renderPlot();
+</script>
